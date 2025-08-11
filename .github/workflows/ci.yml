@@ -4,12 +4,17 @@ jobs:
   build:
     runs-on: ${{ matrix.os }}
     strategy:
-      matrix: { os: [ubuntu-latest, windows-latest] }
+      matrix:
+        os: [ubuntu-latest, windows-latest]
     steps:
       - uses: actions/checkout@v4
       - name: Configure
         run: cmake -S . -B build
       - name: Build
         run: cmake --build build --config Release
-      - name: Run binary (Linux/Windows)
-        run: ./build/hello || build/Release/hello.exe
+      - name: Run (Linux)
+        if: runner.os == 'Linux'
+        run: ./build/hello
+      - name: Run (Windows)
+        if: runner.os == 'Windows'
+        run: .\build\Release\hello.exe
